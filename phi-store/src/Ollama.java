@@ -33,7 +33,7 @@ public class Ollama {
 
     public Response prompt(String userPrompt) throws Exception {
 
-        int port = 11434;
+        int port = 11434; // default ollama port
 
         URL ollamaURL;
         ollamaURL = new URI(

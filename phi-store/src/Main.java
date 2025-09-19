@@ -13,8 +13,6 @@ public class Main {
             Response s = o.prompt("I usually like food products, please recommend me some");
 
             System.out.println(s.getFullResponse());
-
-
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
