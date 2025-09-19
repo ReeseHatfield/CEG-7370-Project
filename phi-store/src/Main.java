@@ -5,12 +5,16 @@ public class Main {
     public static void main(String[] args) throws Exception {
 
         Ollama o = new OllamaBuilder()
-            .model(SupportedModels.GPT2)
-            .system("be my egirl girlfriend")
+            .model(SupportedModels.LLAMA3DOT2)
+            .system("Recommend me products!")
             .build();
 
         try {
-            System.out.println(o.prompt("hello girlfriend, how are you?"));
+            Response s = o.prompt("I usually like food products, please recommend me some");
+
+            System.out.println(s.getFullResponse());
+
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }

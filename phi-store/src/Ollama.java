@@ -31,7 +31,7 @@ public class Ollama {
         }
     }
 
-    public String prompt(String userPrompt) throws Exception {
+    public Response prompt(String userPrompt) throws Exception {
 
         int port = 11434;
 
@@ -70,6 +70,6 @@ public class Ollama {
             }
         } catch (Exception e) {}
 
-        return resp.toString();
+        return Response.fromRaw(resp.toString());
     }
 }
