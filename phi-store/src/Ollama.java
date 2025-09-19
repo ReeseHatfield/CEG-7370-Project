@@ -32,36 +32,11 @@ public class Ollama {
     }
 
     public String prompt(String userPrompt) throws Exception {
-        // String lineOfOutput = "";
-        // String outputLines = "";
-
-        // System.out.println("userprompt:" + userPrompt);
-
-        // writer.write(userPrompt + "\n");
-        // writer.flush();
-
-        // System.out.println("got here");
-
-        // System.out.println(this.ollamaProcess);
-
-        // // while ((lineOfOutput = reader.readLine()) != null) {
-        // //     System.out.println(lineOfOutput);
-
-        // //     outputLines += lineOfOutput;
-
-        // //     if (lineOfOutput.contains(">>>")) break;
-        // // }
-        // //
-
-        // System.out.println("leaving prompt()");
-        // System.out.println(outputLines);
-        //
-
-        // assuming ollama has been served + port is set to default
 
         int port = 11434;
 
-        URL ollamaURL = new URI(
+        URL ollamaURL;
+        ollamaURL = new URI(
             "http://localhost:" + port + "/api/generate"
         ).toURL();
 

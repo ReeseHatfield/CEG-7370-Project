@@ -3,10 +3,9 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello World!");
 
         Ollama o = new OllamaBuilder()
-            .model(SupportedModels.DEEPSEEK_R1)
+            .model(SupportedModels.GPT2)
             .system("be my egirl girlfriend")
             .build();
 
