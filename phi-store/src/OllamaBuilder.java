@@ -21,7 +21,21 @@ public class OllamaBuilder {
         return this;
     }
 
-    public Ollama build() throws Exception {
-        return new Ollama(this);
+    public Ollama build() {
+
+        Ollama o = null;
+        try {
+            o = new Ollama(this);
+        } catch (Exception e) {
+
+            e.printStackTrace();
+            System.out.println("ERROR could not build LLM recommender, please remedy this before continuing");
+            System.exit(1);
+        }
+        finally{
+            return o;
+        }
+
+
     }
 }

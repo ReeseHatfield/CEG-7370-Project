@@ -35,7 +35,8 @@ public class PhiServer {
 
 
     private void initEndpoints(){
-        this.server.createContext("/test", new PhiServerHandler());
+        // I honestly think for the scope of this project, we should only ever need this endpoint
+        this.server.createContext("/rec", new PhiServerHandler());
     }
 
     static class PhiServerHandler implements HttpHandler {
@@ -43,17 +44,32 @@ public class PhiServer {
         @Override
         public void handle(HttpExchange exchange) throws IOException {
             // exchange wraps both request and reponse
-            String wordsToSayBack = "Hello world";
 
-            // oracles javadoc claims bytes.length is better than just length, but it shouldnt matter
-            // for our usecase
-            exchange.sendResponseHeaders(200,  wordsToSayBack.getBytes().length);
-            OutputStream os = exchange.getResponseBody();
-            os.write(wordsToSayBack.getBytes());
-            os.close();
+            Ollama o = new OllamaBuilder()
+                .model(SupportedModels.LLAMA3DOT2)
+                .system("Recommend me products!")
+                .build();
 
+            OutputStream os = null;
+            try {
+                Response s = o.prompt("I usually like food products, please recommend me some");
+
+                // System.out.println(s.getFullResponse());
+
+                // oracles javadoc claims bytes.length is better than just length, but it shouldnt matter
+                // for our usecase
+                exchange.sendResponseHeaders(200,  s.getFullResponse().getBytes().length);
+                os = exchange.getResponseBody();
+                os.write(s.getFullResponse().getBytes());
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+            catch(Exception e) {
+                e.printStackTrace();
+            }finally {
+                os.close();
+            }
         }
     
-        
     }
 }
