@@ -32,8 +32,9 @@ public class Ollama {
     }
 
     public Response prompt(String userPrompt) throws Exception {
+        System.out.println("I am about to prompt with " + userPrompt);
 
-        int port = 11434;
+        int port = 11434; // default ollama port
 
         URL ollamaURL;
         ollamaURL = new URI(
