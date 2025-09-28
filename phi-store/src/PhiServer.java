@@ -45,14 +45,21 @@ public class PhiServer {
         public void handle(HttpExchange exchange) throws IOException {
             // exchange wraps both request and reponse
 
+            // todo parametrize this as a sys arg or something
+            PopularityRecord pr = PopularityRecord.parse("data/store-0.dat");
+
+
             Ollama o = new OllamaBuilder()
-                .model(SupportedModels.LLAMA3DOT2)
-                .system("Recommend me products!")
+                .model(SupportedModels.DEEPSEEK_R1)
+                .system(pr.toPrompt())
                 .build();
 
             OutputStream os = null;
             try {
-                Response s = o.prompt("I usually like food products, please recommend me some");
+                
+                // todo pass this in as GET body param
+                String preferences = "";
+                Response s = o.prompt("Please recommend me products from data from the previous prompt" + preferences);
 
                 // System.out.println(s.getFullResponse());
 

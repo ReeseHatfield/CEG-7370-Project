@@ -2,6 +2,9 @@ set -e
 
 BIN_DIR="bin"
 SRC_DIR="src"
+# kill any existings
+sudo kill $(pgrep ollama)
+
 
 mkdir -p "$BIN_DIR"
 rm -rf "$BIN_DIR/*"
