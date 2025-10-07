@@ -50,7 +50,7 @@ public class PhiServer {
 
 
             Ollama o = new OllamaBuilder()
-                .model(SupportedModels.DEEPSEEK_R1)
+                .model(SupportedModels.PHI3)
                 .system(pr.toPrompt())
                 .build();
 

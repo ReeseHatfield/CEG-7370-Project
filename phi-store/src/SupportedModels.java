@@ -1,6 +1,7 @@
 public enum SupportedModels {
     DEEPSEEK_R1("deepseek-r1"),
     GPT2("mapler/gpt2"),
+    PHI3("phi3"),
     LLAMA3DOT2("hf.co/prithivMLmods/Llama-3.2-1B-GGUF");
 
     private final String modelName;

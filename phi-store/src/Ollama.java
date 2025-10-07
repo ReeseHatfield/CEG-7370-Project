@@ -7,9 +7,10 @@ public class Ollama {
     private Process ollamaProcess;
     private BufferedWriter writer;
     private BufferedReader reader;
+    // psuedo system prompt
+    private String systemPrompt;
     private String model;
 
-    // TODO make real exceptions
     public Ollama(OllamaBuilder ollamaToBeBuilt) throws Exception {
         this.model = ollamaToBeBuilt.getCurrentModel().toString();
         try {
@@ -25,14 +26,29 @@ public class Ollama {
                 new InputStreamReader(ollamaProcess.getInputStream())
             );
 
-            this.prompt(ollamaToBeBuilt.getCurrentPrompt());
+            // this.prompt(ollamaToBeBuilt.getCurrentPrompt());
+            this.systemPrompt = ollamaToBeBuilt.getCurrentPrompt();
+
         } catch (IOException ioe) {
             ioe.printStackTrace();
         }
     }
 
     public Response prompt(String userPrompt) throws Exception {
-        System.out.println("I am about to prompt with " + userPrompt);
+
+
+
+
+        StringBuilder promptBuilder = new StringBuilder();
+
+        // this is not technically how system prompts *really* work
+        // but I think implementing a real context system is beyond the scope of this project
+        promptBuilder.append(this.systemPrompt);
+        promptBuilder.append("\n");
+        promptBuilder.append(userPrompt);
+
+        String prompt = promptBuilder.toString();
+
 
         int port = 11434; // default ollama port
 
@@ -43,15 +59,23 @@ public class Ollama {
 
         HttpURLConnection conn = (HttpURLConnection) ollamaURL.openConnection();
 
-        conn.setRequestMethod("GET");
+        conn.setRequestMethod("POST"); // this should be a post, surprisingly worked before
         conn.setRequestProperty("Content-Type", "application/json");
         conn.setDoOutput(true);
 
+        String safePrompt = prompt
+            .replace("\\", "\\\\")  // escape backslashes first
+            .replace("\"", "\\\"")  // escape quotes
+            .replace("\n", "\\n");  // escape newlines
+
         String json = String.format(
-            "{\"model\":\"%s\",\"prompt\":\"%s\"}",
+            "{\"model\":\"%s\",\"prompt\":\"%s\",\"stream\":false}",
             model,
-            userPrompt
+            safePrompt
         );
+
+        System.out.println("Sending to Ollama:\n" + json);
+
 
         try (OutputStream os = conn.getOutputStream()) {
             os.write(json.getBytes());

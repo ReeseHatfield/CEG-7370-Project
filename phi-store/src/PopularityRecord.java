@@ -80,6 +80,7 @@ public class PopularityRecord {
         sb.append("For example, you might respond with: 'People from this store love to buy potatoes!'");
         sb.append("Make sure any product you recommend was in the provided sample data");
         sb.append("Do not ask any follow up questions.");
+        sb.append("My preferences are as follows:");
 
 
         return sb.toString();
