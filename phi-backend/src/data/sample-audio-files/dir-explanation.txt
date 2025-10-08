@@ -1,2 +1,0 @@
-The source of these audio files:
-https://www.kaggle.com/code/andradaolteanu/work-w-audio-data-visualise-classify-recommend/input
