@@ -7,27 +7,25 @@
  */
 
 
-// Credential: stored the Service Account key in my .bashrc for now
-// export GOOGLE_APPLICATION_CREDENTIALS = ""; 
 
 
 // Imports the Google Cloud client library
 import { readFileSync } from 'fs';
 import { SpeechClient } from '@google-cloud/speech';
 
-// Creates a client
-const client = new SpeechClient();
 
-/*
- * TODO(developer): Uncomment the following lines before running the sample.
- */
-const filename = '../data/sample-audio-files/country.00001.wav';    // 'Local path to audio file, e.g. /path/to/audio.raw';
-const encoding = 'LINEAR16';    // 'Encoding of the audio file, e.g. LINEAR16';
-// const sampleRateHertz = 16000;  // Generally recommended Hertz range at the document
-const languageCode = 'en-US'    // 'BCP-47 language code, e.g. en-US';
+export async function googleSTT(filename) {
+    
+    // Creates a client
+    const client = new SpeechClient();
+    
+    /*
+     * TODO(developer): Uncomment the following lines before running the sample.
+     */
+    const encoding = 'LINEAR16';    // 'Encoding of the audio file, e.g. LINEAR16';
+    // const sampleRateHertz = 16000;  // Generally recommended Hertz range at the document
+    const languageCode = 'en-US'    // 'BCP-47 language code, e.g. en-US';
 
-
-async function googleSTT() {
     const config = {
         encoding: encoding,
         // sampleRateHertz: sampleRateHertz,
@@ -49,9 +47,5 @@ async function googleSTT() {
         .map(result => result.alternatives[0].transcript)
         .join('\n');
 
-    // console.log('\nTranscription: ', transcription);
     return transcription
 }
-
-console.log(googleSTT())
-// export {googleSTT}
