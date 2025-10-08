@@ -12,6 +12,8 @@
   "type": "module",
   "dependencies": {
     "@google-cloud/speech": "^7.2.0",
-    "express": "^5.1.0"
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "multer": "^2.0.2"
   }
 }
