@@ -1,4 +1,6 @@
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
 
@@ -40,43 +42,59 @@ public class PhiServer {
     }
 
     static class PhiServerHandler implements HttpHandler {
+    @Override
 
-        @Override
-        public void handle(HttpExchange exchange) throws IOException {
-            // exchange wraps both request and reponse
+    public void handle(HttpExchange exchange) throws IOException {
+        
 
-            // todo parametrize this as a sys arg or something
-            PopularityRecord pr = PopularityRecord.parse("data/store-0.dat");
-
-
-            Ollama o = new OllamaBuilder()
-                .model(SupportedModels.PHI3)
-                .system(pr.toPrompt())
-                .build();
-
-            OutputStream os = null;
-            try {
-                
-                // todo pass this in as GET body param
-                String preferences = "";
-                Response s = o.prompt("Please recommend me products from data from the previous prompt" + preferences);
-
-                // System.out.println(s.getFullResponse());
-
-                // oracles javadoc claims bytes.length is better than just length, but it shouldnt matter
-                // for our usecase
-                exchange.sendResponseHeaders(200,  s.getFullResponse().getBytes().length);
-                os = exchange.getResponseBody();
-                os.write(s.getFullResponse().getBytes());
-            } catch (IOException ioe) {
-                ioe.printStackTrace();
-            }
-            catch(Exception e) {
-                e.printStackTrace();
-            }finally {
-                os.close();
-            }
+        // need reader for req body
+        BufferedReader reader = new BufferedReader(new InputStreamReader(exchange.getRequestBody()));
+        
+        // should be a fancy way to do with with streams, I cant get that to work rn
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            sb.append(line);
         }
-    
+        String body = sb.toString();
+
+        // "preferences": "something"} is what this is attempting to parse lmao
+        String preferences = "";
+        int start = body.indexOf("\"preferences\"");
+
+
+        int colon = body.indexOf(':', start);
+
+        int firstQuote = body.indexOf('"', colon + 1);
+        int secondQuote = body.indexOf('"', firstQuote + 1);
+
+        if (firstQuote != -1 && secondQuote != -1){
+            preferences = body.substring(firstQuote + 1, secondQuote);
+        }
+
+        PopularityRecord pr = PopularityRecord.parse("data/store-0.dat");
+
+        Ollama o = new OllamaBuilder()
+            .model(SupportedModels.PHI3)
+            .system(pr.toPrompt())
+            .build();
+
+        String prompt = "Please recommend me products from data from the previous prompt " + preferences;
+        Response s;
+        try {
+            s = o.prompt(prompt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            exchange.sendResponseHeaders(500, -1);
+            return;
+        }
+
+        byte[] resp = s.getFullResponse().getBytes();
+        exchange.sendResponseHeaders(200, resp.length);
+        OutputStream os = exchange.getResponseBody();
+        os.write(resp);
+        os.close();
     }
+}
+
 }
