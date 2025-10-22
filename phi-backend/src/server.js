@@ -4,7 +4,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { googleSTT } from "./components/googleSTT.js";
-
+import ffmpeg from "fluent-ffmpeg";
 
 const app = express()
 const port = 3001
@@ -28,26 +28,36 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-app.post("/upload", upload.single("audio"), async (req, res) => {
+
+app.post("/api/upload", upload.single("audio"), async (req, res) => {
   if (!req.file) return res.status(400).json({ error: "No file uploaded" });
 
+  const inputPath = path.resolve(req.file.path);
+  const monoPath = path.resolve("uploads", `${req.file.filename}_mono.wav`);
+
   try {
-    const filePath = path.resolve(req.file.path);
-    const transcription = await googleSTT(filePath);
-    // res.json({
-    //   message: "File uploaded and transcribed",
-    //   filename: req.file.filename,
-    //   transcription,
-    // });
+    // stt needs mono file, weirdly nice ffmpeg library. Like better than native ffmpeg
+    await new Promise((resolve, reject) => {
+      ffmpeg(inputPath)
+        .audioChannels(1)
+        .toFormat("wav")
+        .save(monoPath)
+        .on("end", resolve)
+        .on("error", reject);
+    });
 
-
+    const transcription = await googleSTT(monoPath);
     console.log(transcription);
+
+    fs.unlinkSync(inputPath);
+    fs.unlinkSync(monoPath);
+
+    res.json({ transcription });
   } catch (err) {
     console.error("STT error:", err);
     res.status(500).json({ error: "Speech recognition failed", details: err.message });
   }
 });
-
 
 
 // listen forever
