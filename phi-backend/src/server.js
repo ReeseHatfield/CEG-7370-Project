@@ -27,37 +27,45 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage });
-
-
 app.post("/api/upload", upload.single("audio"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
-  const inputPath = path.resolve(req.file.path);
-  const monoPath = path.resolve("uploads", `${req.file.filename}_mono.wav`);
-
+  const t0 = Date.now();
   try {
-    // stt needs mono file, weirdly nice ffmpeg library. Like better than native ffmpeg
+    console.log("received upload", req.file.path);
+    const inputPath = path.resolve(req.file.path);
+    const monoPath = path.resolve("uploads", `${req.file.filename}_mono.wav`);
+
     await new Promise((resolve, reject) => {
       ffmpeg(inputPath)
         .audioChannels(1)
         .toFormat("wav")
-        .save(monoPath)
         .on("end", resolve)
-        .on("error", reject);
+        .on("error", reject)
+        .save(monoPath);
     });
+    console.log("ffmpeg done", Date.now() - t0);
 
     const transcription = await googleSTT(monoPath);
-    console.log(transcription);
+    console.log("STT done", Date.now() - t0, transcription);
+
+    const response = await fetch("http://localhost:3002/rec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ preferences: transcription }),
+    });
+    const recommendation = await response.text();
+    console.log("rec API done", Date.now() - t0);
+
+    res.json({ recommendation });
+    console.log("response sent", Date.now() - t0);
 
     fs.unlinkSync(inputPath);
     fs.unlinkSync(monoPath);
-
-    res.json({ transcription });
   } catch (err) {
-    console.error("STT error:", err);
-    res.status(500).json({ error: "Speech recognition failed", details: err.message });
+    console.error("upload flow error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
+
 
 
 // listen forever
