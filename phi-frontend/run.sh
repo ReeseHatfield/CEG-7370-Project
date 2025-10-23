@@ -1,6 +1,5 @@
 #!/bin/bash
+# build frontend
+npm ci
 
-# can add more here as needed
-npm i
-
-npm run start
+npm run build
