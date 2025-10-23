@@ -29,6 +29,8 @@ const storage = multer.diskStorage({
 });
 
 
+
+
 const upload = multer({ storage });
 app.post("/api/upload", upload.single("audio"), async (req, res) => {
   const t0 = Date.now();
@@ -72,6 +74,6 @@ app.post("/api/upload", upload.single("audio"), async (req, res) => {
 
 
 // listen forever
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
   console.log(`App listening on port ${port}`)
 })
