@@ -12,12 +12,17 @@ export default function AudioUploader() {
         formData.append("audio", file);
 
         // this will be reverse proxied later on once Ashutosh can get us the hosting stuff
-        const res = await fetch("/api/upload", {
+        const res = await fetch("http://localhost:3001/api/upload", {
             method: "POST",
             body: formData,
         });
 
-        const data = await res.json();
+        let data = await res;
+
+        console.log("data was: " + data);
+
+
+        data = data.json()
         console.log("Server response:", data);
     };
 
