@@ -1,35 +1,40 @@
 import { useState } from "react";
 
+const getApiBaseUrl = () => {
+  if (window.location.hostname === "localhost") {
+    return "http://localhost:3001"; 
+  }
+  return ""; 
+};
+
 export default function AudioUploader() {
-    const [file, setFile] = useState(null);
+  const [file, setFile] = useState(null);
 
-    const handleFileChange = e => setFile(e.target.files[0]);
+  const handleFileChange = e => setFile(e.target.files[0]);
 
-    const handleUpload = async () => {
-        if (!file) return alert("Select an audio file first");
+  const handleUpload = async () => {
+    if (!file) return alert("Select an audio file first");
 
-        const formData = new FormData();
-        formData.append("audio", file);
+    const formData = new FormData();
+    formData.append("audio", file);
 
-        // this will be reverse proxied later on once Ashutosh can get us the hosting stuff
-        const res = await fetch("http://localhost:3001/api/upload", {
-            method: "POST",
-            body: formData,
-        });
+    try {
+      const res = await fetch(`${getApiBaseUrl()}/api/upload`, {
+        method: "POST",
+        body: formData,
+      });
 
-        let data = await res;
+      const data = await res.json();
+      console.log("Server response:", data);
+    } catch (err) {
+      console.error("Upload failed:", err);
+    }
+  };
 
-        console.log("data was: " + data);
-
-
-        data = data.json()
-        console.log("Server response:", data);
-    };
-
-    return (
-        <div className="p-4">
-        <input type="file" accept="audio/*" onChange={handleFileChange} />
-        <button onClick={handleUpload}>Upload</button>
-        </div>
-    );
+  return (
+    <div className="p-4">
+      <input type="file" accept="audio/*" onChange={handleFileChange} />
+      <button onClick={handleUpload}>Upload</button>
+    </div>
+  );
 }
