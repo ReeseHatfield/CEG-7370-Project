@@ -83,6 +83,8 @@ public class PhiServer {
         Response s;
         try {
             s = o.prompt(prompt);
+
+            System.out.println("Response was " + s.getFullResponse());
         } catch (Exception e) {
             e.printStackTrace();
             exchange.sendResponseHeaders(500, -1);

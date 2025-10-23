@@ -4,7 +4,7 @@ import cors from "cors";
 import path from "path";
 import fs from "fs";
 import { googleSTT } from "./components/googleSTT.js";
-
+import ffmpeg from "fluent-ffmpeg";
 
 const app = express()
 const port = 3001
@@ -27,24 +27,42 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage });
-
-app.post("/upload", upload.single("audio"), async (req, res) => {
-  if (!req.file) return res.status(400).json({ error: "No file uploaded" });
-
+app.post("/api/upload", upload.single("audio"), async (req, res) => {
+  const t0 = Date.now();
   try {
-    const filePath = path.resolve(req.file.path);
-    const transcription = await googleSTT(filePath);
-    // res.json({
-    //   message: "File uploaded and transcribed",
-    //   filename: req.file.filename,
-    //   transcription,
-    // });
+    console.log("received upload", req.file.path);
+    const inputPath = path.resolve(req.file.path);
+    const monoPath = path.resolve("uploads", `${req.file.filename}_mono.wav`);
 
+    await new Promise((resolve, reject) => {
+      ffmpeg(inputPath)
+        .audioChannels(1)
+        .toFormat("wav")
+        .on("end", resolve)
+        .on("error", reject)
+        .save(monoPath);
+    });
+    console.log("ffmpeg done", Date.now() - t0);
 
-    console.log(transcription);
+    const transcription = await googleSTT(monoPath);
+    console.log("STT done", Date.now() - t0, transcription);
+
+    const response = await fetch("http://localhost:3002/rec", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ preferences: transcription }),
+    });
+    const recommendation = await response.text();
+    console.log("rec API done", Date.now() - t0);
+
+    res.json({ recommendation });
+    console.log("response sent", Date.now() - t0);
+
+    fs.unlinkSync(inputPath);
+    fs.unlinkSync(monoPath);
   } catch (err) {
-    console.error("STT error:", err);
-    res.status(500).json({ error: "Speech recognition failed", details: err.message });
+    console.error("upload flow error:", err);
+    res.status(500).json({ error: err.message });
   }
 });
 
