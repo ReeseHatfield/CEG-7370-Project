@@ -9,7 +9,10 @@ import ffmpeg from "fluent-ffmpeg";
 const app = express()
 const port = 3001
 
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:3000", "http://52.6.125.198"],
+  credentials: true
+}));
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
