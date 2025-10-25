@@ -26,10 +26,36 @@ const storage = multer.diskStorage({
 });
 
 
+const args = process.argv.slice(2); 
 
+
+console.log("args: " + args)
+// im so sorry jinho
+let isRunningInProd = false;
+
+if(args.length >= 1){
+  
+  if(args[0] == "prod"){
+    isRunningInProd = true;
+  }
+}
+
+
+let uploadRoute = ""
+if (isRunningInProd){
+  uploadRoute = "/upload";
+}
+else {
+  uploadRoute = "/api/upload";
+}
+
+
+console.log(`Upload route was ${uploadRoute}`)
 
 const upload = multer({ storage });
-app.post("/api/upload", upload.single("audio"), async (req, res) => {
+app.post(uploadRoute, upload.single("audio"), async (req, res) => {
+
+  console.log("upload route was hit")
   const t0 = Date.now();
   try {
     console.log("received upload", req.file.path);
