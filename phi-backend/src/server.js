@@ -30,6 +30,11 @@ const storage = multer.diskStorage({
 
 
 const upload = multer({ storage });
+
+app.get("/api/upload", () => {
+  console.log("you sent a GET to /api/upload");
+})
+
 app.post("/api/upload", upload.single("audio"), async (req, res) => {
 
   console.log("upload route was hit")
