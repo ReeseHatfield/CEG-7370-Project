@@ -4,7 +4,7 @@ const getApiBaseUrl = () => {
   // local dev
   if (window.location.hostname === "localhost") return "http://localhost:3001";
   // prod
-  return "http://52.6.125.198";
+  return "http://52.6.125.198:3001";
 };
 
 export default function AudioUploader() {

@@ -13,7 +13,7 @@ const port = 3001
 
 const mode = process.argv[2] || "dev"; 
 // rahhhhhh im sorry jinho
-const host = mode === "prod" ? "52.6.125.198" : "localhost";
+const host = mode === "prod" ? "0.0.0.0" : "localhost";
 
 
 
@@ -81,7 +81,6 @@ app.post("/api/upload", upload.single("audio"), async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 
 // listen forever
