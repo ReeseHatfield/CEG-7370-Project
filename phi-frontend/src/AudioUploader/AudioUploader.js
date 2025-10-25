@@ -19,7 +19,7 @@ export default function AudioUploader() {
     formData.append("audio", file);
 
     try {
-      const res = await fetch(`/api/upload`, {
+      const res = await fetch(`${getApiBaseUrl()}/api/upload`, {
         method: "POST",
         body: formData,
       });

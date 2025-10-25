@@ -9,10 +9,19 @@ import ffmpeg from "fluent-ffmpeg";
 const app = express()
 const port = 3001
 
+
+
+const mode = process.argv[2] || "dev"; 
+// rahhhhhh im sorry jinho
+const host = mode === "prod" ? "52.6.125.198" : "localhost";
+
+
+
 app.use(cors());
 
 app.get('/', (req, res) => {
-  res.send('Hello World!')
+  res.send('Hello World! on ' + host)
+
 })
 
 
@@ -24,9 +33,6 @@ const storage = multer.diskStorage({
   destination: (_, __, cb) => cb(null, uploadDir),
   filename: (_, file, cb) => cb(null, Date.now() + path.extname(file.originalname)),
 });
-
-
-
 
 
 const upload = multer({ storage });
@@ -79,6 +85,6 @@ app.post("/api/upload", upload.single("audio"), async (req, res) => {
 
 
 // listen forever
-app.listen(port, "0.0.0.0", () => {
+app.listen(port, host, () => {
   console.log(`App listening on port ${port}`)
 })
