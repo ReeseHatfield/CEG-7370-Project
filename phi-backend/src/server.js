@@ -9,10 +9,7 @@ import ffmpeg from "fluent-ffmpeg";
 const app = express()
 const port = 3001
 
-app.use(cors({
-  origin: ["http://localhost:3000", "http://52.6.125.198"],
-  credentials: true
-}));
+app.use(cors());
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
@@ -74,6 +71,6 @@ app.post("/api/upload", upload.single("audio"), async (req, res) => {
 
 
 // listen forever
-app.listen(port, '0.0.0.0', () => {
+app.listen(port, () => {
   console.log(`App listening on port ${port}`)
 })
