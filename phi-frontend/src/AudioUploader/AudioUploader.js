@@ -1,10 +1,10 @@
 import { useState } from "react";
 
 const getApiBaseUrl = () => {
-  if (window.location.hostname === "localhost") {
-    return "http://localhost:3001"; 
-  }
-  return ""; 
+  // local dev
+  if (window.location.hostname === "localhost") return "http://localhost:3001";
+  // prod
+  return "http://52.6.125.198";
 };
 
 export default function AudioUploader() {
@@ -19,10 +19,11 @@ export default function AudioUploader() {
     formData.append("audio", file);
 
     try {
-      const res = await fetch(`/api/upload`, {
+      const res = await fetch(`${getApiBaseUrl()}/api/upload`, {
         method: "POST",
         body: formData,
       });
+
 
       const data = await res.json();
       console.log("Server response:", data);
