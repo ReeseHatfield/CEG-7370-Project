@@ -1,9 +1,8 @@
 /* 
  * Doc: https://cloud.google.com/speech-to-text/docs/sync-recognize
  *
- * TODO1: make googleSTT() function more flexible by parameterizing "filename" (+ "credential" and "encoding")
- * TODO2: consider real-time speech recognition
- *        (https://cloud.google.com/speech-to-text/docs/samples/speech-transcribe-streaming-mic?hl=en#speech_transcribe_streaming_mic-nodejs)
+ * Doc: real-time speech recognition
+ *      (https://cloud.google.com/speech-to-text/docs/samples/speech-transcribe-streaming-mic?hl=en#speech_transcribe_streaming_mic-nodejs)
  */
 
 
