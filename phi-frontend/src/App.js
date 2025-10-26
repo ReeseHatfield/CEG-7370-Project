@@ -1,4 +1,5 @@
 import './App.css';
+import IpReader from './IpReader/IpReader'
 import AudioUploader from './AudioUploader/AudioUploader';
 import AudioRecorder from './AudioRecorder/AudioRecorder';
 
@@ -9,6 +10,7 @@ function App() {
       
       <h3 className="order-container"> 
         What would you like to eat? <br/><br/> 
+        <IpReader />
         <AudioRecorder /> <br/><br/>
         <AudioUploader /> 
       </h3>
