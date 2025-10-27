@@ -1,10 +1,9 @@
 import { useState } from "react";
 
+
 const getApiBaseUrl = () => {
-  // local dev
   if (window.location.hostname === "localhost") return "http://localhost:3001";
-  // prod
-  return "https://52.6.125.198:3001";
+  return ""; // same origin in production
 };
 
 export default function AudioUploader() {
