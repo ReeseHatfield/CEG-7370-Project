@@ -1,6 +1,7 @@
 import './App.css';
 import AudioUploader from './AudioUploader/AudioUploader';
 import AudioRecorder from './AudioRecorder/AudioRecorder';
+import LocationReader from './LocationReader/LocationReader';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         What would you like to eat? <br/><br/> 
         <AudioRecorder /> <br/><br/>
         <AudioUploader /> 
+        <LocationReader />
       </h3>
       {/* TODO1: how to translate audio input to an audio file */}
       {/* TODO2: need a separate page for order? e.g. phi-store.com/order */}
