@@ -18,7 +18,7 @@
 
 ## Demo Video:
 
-<video src="./docs/PhiDemo.mp4" controls>
+<video src="./docs/PhiDemoCompressed.mp4" controls>
 </video>
 
 ## What is Phi?
