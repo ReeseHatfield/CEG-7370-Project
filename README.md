@@ -18,8 +18,11 @@
 
 ## Demo Video:
 
-<video src="./docs/PhiDemoCompressed.mp4" controls>
-</video>
+
+
+https://github.com/user-attachments/assets/a4f2a691-031e-41bf-a9ed-3397512bbbbe
+
+Youtube Version: https://www.youtube.com/watch?v=R_ioFtn7DPI
 
 ## What is Phi?
 
