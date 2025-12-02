@@ -16,4 +16,10 @@
 - [Stage 2](./Slides(Phase2).pdf)
 - [Stage 3](./Slides(Phase3).pdf)
 
+## Demo Video:
+
+<video src="./docs/PhiDemo.mp4" controls>
+</video>
+
 ## What is Phi?
+
